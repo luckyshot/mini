@@ -15,6 +15,7 @@ For a deeper introduction into MINI have a look into this blog post:
 
 ## Features
 
+- User Authentication through Twitter login
 - extremely simple, easy to understand
 - simple but clean structure
 - makes "beautiful" clean URLs
@@ -23,49 +24,54 @@ For a deeper introduction into MINI have a look into this blog post:
 - tries to follow PSR 1/2 coding guidelines
 - uses PDO for any database requests, comes with an additional PDO debug tool to emulate your SQL statements
 - commented code
+- Cross-Site Request Forgery protection
 - uses only native PHP code, so people don't have to learn a framework
+
+## About this fork
+
+This is a fork from the original <a href="https://github.com/panique/mini">panique/mini</a> instead of Pull Requests because it adds many features that escape the scope of the purpose of MINI (to be small). It includes basic User Authentication through Twitter Login as well as other features. Also, the code uses tabs instead of spaces and cleans up trailing white-space and line breaks.
 
 ## Forks of MINI
 
 ### TINY
- 
-MINI has a smaller brother, named [TINY](https://github.com/panique/tiny). It's similar to MINI, but runs without 
+
+MINI has a smaller brother, named [TINY](https://github.com/panique/tiny). It's similar to MINI, but runs without
 mod_rewrite in nearly every environment. Not suitable for live sites, but nice for quick prototyping.
- 
-### MINI2 
- 
-MINI also has a bigger brother, named [MINI2](https://github.com/panique/mini2). It's even simpler, has been built 
+
+### MINI2
+
+MINI also has a bigger brother, named [MINI2](https://github.com/panique/mini2). It's even simpler, has been built
 using Slim and has nice features like SASS-compiling, Twig etc.
 
 ## Requirements
 
 - PHP 5.3.0+
 - MySQL
-- mod_rewrite activated (tutorials below, but there's also [TINY](https://github.com/panique/tiny), a mod_rewrite-less 
+- mod_rewrite activated (tutorials below, but there's also [TINY](https://github.com/panique/tiny), a mod_rewrite-less
 version of MINI)
 
 ## Installation (in Vagrant, 100% automatic)
 
 If you are using Vagrant for your development, then you can install MINI with one click (or one command on the
-command line) [[Vagrant doc](https://docs.vagrantup.com/v2/getting-started/provisioning.html)]. MINI comes with a demo 
-Vagrant-file (defines your Vagrant box) and a demo bootstrap.sh which automatically installs Apache, PHP, MySQL, 
-PHPMyAdmin, git and Composer, sets a chosen password in MySQL and PHPMyadmin and even inside the application code, 
+command line) [[Vagrant doc](https://docs.vagrantup.com/v2/getting-started/provisioning.html)]. MINI comes with a demo
+Vagrant-file (defines your Vagrant box) and a demo bootstrap.sh which automatically installs Apache, PHP, MySQL,
+PHPMyAdmin, git and Composer, sets a chosen password in MySQL and PHPMyadmin and even inside the application code,
 downloads the Composer-dependencies, activates mod_rewrite and edits the Apache settings, downloads the code from GitHub
-and runs the demo SQL statements (for demo data). This is 100% automatic, you'll end up after +/- 5 minutes with a fully 
+and runs the demo SQL statements (for demo data). This is 100% automatic, you'll end up after +/- 5 minutes with a fully
 running installation of MINI2 inside an Ubuntu 14.04 LTS Vagrant box.
 
-To do so, put `Vagrantfile` and `bootstrap.sh` from `_vagrant` inside a folder (and nothing else). 
-Do `vagrant box add ubuntu/trusty64` to add Ubuntu 14.04 LTS ("Trusty Thar") 64bit to Vagrant (unless you already have 
-it), then do `vagrant up` to run the box. When installation is finished you can directly use the fully installed demo 
-app on `192.168.33.44`. As this just a quick demo environment the MySQL root password and the PHPMyAdmin root password 
+To do so, put `Vagrantfile` and `bootstrap.sh` from `_vagrant` inside a folder (and nothing else).
+Do `vagrant box add ubuntu/trusty64` to add Ubuntu 14.04 LTS ("Trusty Thar") 64bit to Vagrant (unless you already have
+it), then do `vagrant up` to run the box. When installation is finished you can directly use the fully installed demo
+app on `192.168.33.44`. As this just a quick demo environment the MySQL root password and the PHPMyAdmin root password
 are set to `12345678`, the project is installed in `/var/www/html/myproject`. You can change this for sure inside
 `bootstrap.sh`.
 
 ## Auto-Installation on Ubuntu 14.04 LTS (in 30 seconds)
 
-You can install MINI including Apache, MySQL, PHP and PHPMyAdmin, mod_rewrite, Composer, all necessary settings and 
-even the passwords inside the configs file by simply downloading one file and executing it, the entire installation 
-will run 100% automatically. Find the tutorial in this blog article: 
+You can install MINI including Apache, MySQL, PHP and PHPMyAdmin, mod_rewrite, Composer, all necessary settings and
+even the passwords inside the configs file by simply downloading one file and executing it, the entire installation
+will run 100% automatically. Find the tutorial in this blog article:
 [Install MINI in 30 seconds inside Ubuntu 14.04 LTS](http://www.dev-metal.com/install-mini-30-seconds-inside-ubuntu-14-04-lts/)
 
 ## Installation
@@ -80,7 +86,7 @@ will run 100% automatically. Find the tutorial in this blog article:
    [XAMPP for Windows](http://www.leonardaustin.com/blog/technical/enable-mod_rewrite-in-xampp/),
    [MAMP on Mac OS](http://stackoverflow.com/questions/7670561/how-to-get-htaccess-to-work-on-mamp)
 
-MINI runs without any further configuration. You can also put it inside a sub-folder, it will work without any 
+MINI runs without any further configuration. You can also put it inside a sub-folder, it will work without any
 further configuration.
 Maybe useful: A simple tutorial on [How to install LAMPP (Linux, Apache, MySQL, PHP, PHPMyAdmin) on Ubuntu 14.04 LTS](http://www.dev-metal.com/installsetup-basic-lamp-stack-linux-apache-mysql-php-ubuntu-14-04-lts/)
 and [the same for Ubuntu 12.04 LTS](http://www.dev-metal.com/setup-basic-lamp-stack-linux-apache-mysql-php-ubuntu-12-04/).
@@ -153,8 +159,8 @@ And by the way, I'm also blogging at [Dev Metal](http://www.dev-metal.com).
 
 #### The structure in general
 
-The application's URL-path translates directly to the controllers (=files) and their methods inside 
-application/controllers. 
+The application's URL-path translates directly to the controllers (=files) and their methods inside
+application/controllers.
 
 `example.com/home/exampleOne` will do what the *exampleOne()* method in application/controllers/home.php says.
 
@@ -214,7 +220,7 @@ public function getAllSongs()
     $sql = "SELECT id, artist, track, link FROM song";
     $query = $this->db->prepare($sql);
     $query->execute();
-    
+
     return $query->fetchAll();
 }
 ```
@@ -242,8 +248,8 @@ about that - which is totally right!) I've renamed and rebuild the project.
 
 ... MINI is just a simple helper-tool I've created for my daily work, simply because it was much easier to setup and to
 handle than real frameworks. For daily agency work, quick prototyping and frontend-driven projects it's totally okay,
-does the job and there's absolutely no reason to discuss why it's "shit compared to Laravel", why it does not follow 
-several MVC principles or why there's no personal unpaid support or no russian translation or similar weird stuff. 
+does the job and there's absolutely no reason to discuss why it's "shit compared to Laravel", why it does not follow
+several MVC principles or why there's no personal unpaid support or no russian translation or similar weird stuff.
 The trolling against Open-Source-projects (and their authors) has really reached insane dimensions.
 
 I've written this unpaid, voluntarily, in my free-time and uploaded it on GitHub to share.
@@ -258,6 +264,11 @@ Please commit into the develop branch (which holds the in-development version), 
 
 ## Changelog
 
+**30 June 2016**
+- <a href="https://xaviesteve.com/">xaviesteve</a>: User Accounts/Registration through Twitter (library by <a href="http://abrah.am">Abraham Williams</a>)
+- <a href="https://xaviesteve.com/">xaviesteve</a>: Cross-Site Request Forgery security protection
+- <a href="https://xaviesteve.com/">xaviesteve</a>: Multiple Models (based on <a href="https://github.com/panique/mini/issues/195">coyarzun2013</a>'s code)
+
 **February 2015**
 
 - [jeroenseegers] nginx setup configuration
@@ -265,7 +276,7 @@ Please commit into the develop branch (which holds the in-development version), 
 **December 2014**
 - [panique] css fixes
 - [panique] renamed controller / view to singular
-- [panique] added charset to PDO creation (increased security) 
+- [panique] added charset to PDO creation (increased security)
 
 **November 2014**
 - [panique] auto-install script for Vagrant
