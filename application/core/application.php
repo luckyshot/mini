@@ -104,14 +104,15 @@ class Application
 	* Protection against this kind of vulnerability
 	*/
 	protected function crsf(){
+		$current_token = isset($_SESSION['crsf_token']) ? $_SESSION['crsf_token'] : false;
+		$_SESSION['crsf_token'] = $this->random_str();
 		if (
 			!in_array($_SERVER['REQUEST_METHOD'], ['GET','OPTIONS']) AND
-			( !isset($_POST['crsf_token']) OR $_POST['crsf_token'] !== $_SERVER['crsf_token'] )
+			(!isset($_POST['crsf_token']) OR !$current_token OR $_POST['crsf_token'] !== $current_token )
 		) {
 			header("Location: " . URL );
 			die();
 		}
-		$_SERVER['crsf_token'] = $this->random_str();
 	}
 
 
