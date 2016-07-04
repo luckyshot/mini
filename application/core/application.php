@@ -111,6 +111,7 @@ class Application
 		$current_token = isset($_SESSION['crsf_token']) ? $_SESSION['crsf_token'] : false;
 		$_SESSION['crsf_token'] = $this->random_str();
 		if (
+			isset($_SERVER['REQUEST_METHOD']) AND
 			!in_array($_SERVER['REQUEST_METHOD'], ['GET','OPTIONS']) AND
 			(!isset($_POST['crsf_token']) OR !$current_token OR $_POST['crsf_token'] !== $current_token )
 		) {
