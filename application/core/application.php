@@ -71,6 +71,12 @@ class Application
 	*/
 	private function splitUrl()
 	{
+		// if script called from CLI then set GET parameter
+		if (php_sapi_name() == "cli") {
+			global $argv;
+			$_GET['url'] = @$argv[1];
+		}
+
 		if ( isset($_GET['url']) ) {
 
 			// split URL
