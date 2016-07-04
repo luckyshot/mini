@@ -25,6 +25,7 @@ For a deeper introduction into MINI have a look into this blog post:
 - uses PDO for any database requests, comes with an additional PDO debug tool to emulate your SQL statements
 - commented code
 - Cross-Site Request Forgery protection
+- Allows CLI execution (for cronjobs, etc.)
 - uses only native PHP code, so people don't have to learn a framework
 
 ## About this fork
