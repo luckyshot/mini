@@ -26,11 +26,12 @@ class Application
 		// create array with URL parts in $url
 		$this->splitUrl();
 
+		require APP . 'controller/home.php';
+		$page = new Home();
+			
 		// check for controller: no controller given ? then load start-page
 		if ( !$this->url_controller ) {
 
-			require APP . 'controller/home.php';
-			$page = new Home();
 			$page->index();
 
 		} elseif (file_exists(APP . 'controller/' . $this->url_controller . '.php')) {
@@ -61,6 +62,9 @@ class Application
 					header('location: ' . URL . 'error');
 				}
 			}
+		// call Home methods without the need of /home/
+		} elseif ( method_exists( $page, $this->url_controller ) ){
+			$page->{$this->url_controller}();
 		} else {
 			http_response_code(404);
 			require APP . 'view/_templates/header.php';
