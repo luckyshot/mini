@@ -25,7 +25,7 @@
 		<a href="<?php echo URL; ?>home/exampleone">subpage</a>
 		<a href="<?php echo URL; ?>home/exampletwo">subpage 2</a>
 		<a href="<?php echo URL; ?>songs">songs</a>
-		<?php if ( $this->user->profile ) { ?>
+		<?php if ( isset( $this->user->profile ) AND $this->user->profile ) { ?>
 			<a href="<?php echo URL; ?>user"><?=$this->user->profile->username?></a>
 		<?php }else{ ?>
 			<a href="<?php echo URL; ?>user">Signup / Login</a>
