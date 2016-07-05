@@ -62,7 +62,11 @@ class Application
 				}
 			}
 		} else {
-			header('location: ' . URL . 'error');
+			http_response_code(404);
+			require APP . 'view/_templates/header.php';
+			require APP . 'view/error/index.php';
+			require APP . 'view/_templates/footer.php';
+			die();
 		}
 	}
 
