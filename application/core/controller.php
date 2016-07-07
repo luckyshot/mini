@@ -68,19 +68,4 @@ class Controller
 		// create new "model" (and pass the database connection)
 		$this->model = new $instanceClass( $this->db );
 	}
-
-
-	// /**
-	// * Loads the models.
-	// * @return object model
-	// */
-	// public function loadModels()
-	// {
-	// 	require APP . 'model/model.php';
-	// 	$this->model = new Model($this->db);
-	//
-	// 	require APP . 'model/user.php';
-	// 	$this->userModel = new UserModel($this->db);
-	//
-	// }
 }
