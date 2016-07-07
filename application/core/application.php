@@ -98,6 +98,11 @@ class Application
 			$this->url_controller = isset($url[0]) ? $url[0] : null;
 			$this->url_action = isset($url[1]) ? $url[1] : null;
 
+			// Allow hyphens in URL: Uppercase first letter after hyphen
+			// i.e. how-it-works --> howItWorks
+			$this->url_action = preg_replace_callback('/(\-[a-z]+)/', create_function('$m','return ucfirst(str_replace("-","",$m[1]));'), $this->url_action);
+			$this->url_controller = preg_replace_callback('/(\-[a-z]+)/', create_function('$m','return ucfirst(str_replace("-","",$m[1]));'), $this->url_controller);
+
 			// Remove controller and action from the split URL
 			unset($url[0], $url[1]);
 
