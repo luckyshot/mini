@@ -25,7 +25,7 @@ class Controller
 
 		//getting the className of the Controller who extends controller class
 		$class = get_called_class();
-		$this->openDatabaseConnection();
+
 		//passing this classname as parameter to loadModel Function
 		$this->loadModel( $class );
 	}
