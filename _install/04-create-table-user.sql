@@ -4,9 +4,9 @@ CREATE TABLE `user` (
 	`full_name` varchar(100) NOT NULL,
 	`email` varchar(50) NOT NULL,
 	`avatar` varchar(250) NOT NULL,
-	`session_token` varchar(250) NOT NULL,
-	`request_token` varchar(250) NOT NULL,
-	`request_token_secret` varchar(250) NOT NULL,
+	`session_token` char(64) NOT NULL,
+	`oauth_token` varchar(100) NOT NULL,
+	`oauth_token_secret` varchar(100) NOT NULL,
 	`date_added` datetime NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
