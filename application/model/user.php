@@ -58,18 +58,27 @@ class UserModel
 			// create another connection object with access token
 			$connection = new TwitterOAuth( CONSUMER_KEY, CONSUMER_SECRET, $access_token['oauth_token'], $access_token['oauth_token_secret'] );
 			// set the parameters array with attributes include_entities false
-			$params = array('include_entities'=>'false');
+			$params = array(
+				'include_entities'=>'false',
+				// NOTE: Uncomment the following line to get the user's email address 
+				//       directly from Twitter. You will need to ask for the 
+				//       "Request email addresses from users" special permission here: 
+				//       https://support.twitter.com/forms/platform
+				//       Then follow these instructions:
+				//       https://dev.twitter.com/rest/reference/get/account/verify_credentials
+				// 'include_email' => 'true',
+			);
 			// get the data
 			$data = $connection->get( 'account/verify_credentials', $params );
 			if ( $data ){
-				$this->create_user( $data );
+				$this->create_user( $data, $access_token );
 				return $data;
 			}
 		}
 		return false;
 	}
 
-	protected function create_user( $data )
+	protected function create_user( $data, $access_token )
 	{
 		$query = $this->db->prepare("SELECT id FROM user WHERE username = :username LIMIT 1;");
 		$query->execute([':username' => $data->screen_name]);
@@ -81,15 +90,16 @@ class UserModel
 			return false;
 		}
 
-		$query = $this->db->prepare("INSERT INTO user (id, username, full_name, email, avatar, session_token, request_token, request_token_secret, date_added)
-		VALUES (NULL, :username, :full_name, '', :profile_image_url, :session_token, :request_token, :request_token_secret, :date_added);");
+		$query = $this->db->prepare("INSERT INTO user (id, username, full_name, email, avatar, session_token, oauth_token, oauth_token_secret, date_added)
+		VALUES (NULL, :username, :full_name, :email, :profile_image_url, :session_token, :oauth_token, :oauth_token_secret, :date_added);");
 		$query->execute([
 			':username' => $data->screen_name,
 			':full_name' => $data->name,
+			':email' => @$data->email, // if you haven't enabled email addresses from Twitter the '@' will make it fail silently
 			':profile_image_url' => $data->profile_image_url,
 			':session_token' => $this->random_str(),
-			':request_token' => $_SESSION['request_token'],
-			':request_token_secret' => $_SESSION['request_token_secret'],
+			':oauth_token' => $access_token['oauth_token'],
+			':oauth_token_secret' => $access_token['oauth_token_secret'],
 			':date_added' => date('Y-m-d H:i:s', time()),
 		]);
 
